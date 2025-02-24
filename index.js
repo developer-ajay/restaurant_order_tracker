@@ -16,18 +16,15 @@ orderForm.addEventListener("submit", function (event) {
         table : tableValue
     }
     
-    localStorage.setItem("order",JSON.stringify(order));
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
 
+    orders.push(order);
+    localStorage.setItem("orders", JSON.stringify(orders));
+    
     dishInput.value = "";
     priceInput.value = "";
     tableInput.value = "Table 1";
-
-    console.log("Dish:", dishValue);
-    console.log("Price:", priceValue);
-    console.log("Table:", tableValue);
+    
     
 });
-
-const savedOrder = JSON.parse(localStorage.getItem("order"));
-console.log(savedOrder);
 
