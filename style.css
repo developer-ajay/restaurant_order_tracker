@@ -62,7 +62,7 @@ header {
 }
 
 .add-btn:hover {
-    background: darkgreen;
+    background: rgb(1, 52, 1);
 }
 
 table {
@@ -78,8 +78,8 @@ table th, table td {
 }
 
 table th {
-    background-color: #1325cb;
-    color: white;
+    background-color: #4adbde;
+    color: rgb(13, 13, 13);
 }
 
 /* Delete Button */
@@ -93,5 +93,5 @@ table th {
 }
 
 .delete-btn:hover {
-    background-color: darkred;
+    background-color: rgb(22, 1, 1);
 }
