@@ -39,29 +39,51 @@
             </form>
         </div>
 
-        <!-- Table 1 -->
-        <div class="table-container">
-            <h2>Table 1</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Dish</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="orderList1">
-                    <tr>
-                        <td>1</td>
-                        <td>Chicken Fry</td>
-                        <td>100</td>
-                        <td><button class="delete-btn">delete</button></td>
-                    </tr>
-                </tbody>
-            </table>
-            <p><strong>Total Price: ₹<span id="totalPrice1">100</span></strong></p>
-        </div>
+    <!-- Table to display orders -->
+     <h2>ORDER SUMMARY</h2>
+    <h2>Table 1</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Dish Name</th>
+                <th>Dish Price</th>
+            </tr>
+        </thead>
+        <tbody id="table1Orders">
+            <!-- Dynamic rows will be added here -->
+        </tbody>
+    </table>
+    <h3 id="totalTable1" class="Total">Total: ₹0.00</h3>
+    <h2>Table 2</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Dish Name</th>
+                <th>Dish Price</th>
+            </tr>
+        </thead>
+        <tbody id="table2Orders">
+            <!-- Dynamic rows will be added here -->
+        </tbody>
+    </table>
+    <h3 id="totalTable2" class="Total">Total: ₹0.00</h3>
+    <h2>Table 3</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Dish Name</th>
+                <th>Dish Price</th>
+            </tr>
+        </thead>
+        <tbody id="table3Orders">
+            <!-- Dynamic rows will be added here -->
+        </tbody>   
+    </table>
+    <h3 id="totalTable3" class="Total">Total: ₹0.00</h3>
+
     <script src="index.js"></script>
 </body>
 </html>

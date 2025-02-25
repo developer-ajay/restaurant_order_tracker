@@ -95,3 +95,10 @@ table th {
 .delete-btn:hover {
     background-color: rgb(22, 1, 1);
 }
+
+.Total {
+    color: #d32f2f; 
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+}
