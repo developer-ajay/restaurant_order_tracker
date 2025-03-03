@@ -102,3 +102,21 @@ table th {
     font-weight: bold;
     margin-top: 10px;
 }
+
+
+.edit-btn {
+    background-color: #4adbde;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-right: 25px;
+}
+
+.delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
