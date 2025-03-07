@@ -2,112 +2,142 @@ const dishInput = document.getElementById("dish");
 const priceInput = document.getElementById("price");
 const tableInput = document.getElementById("table");
 const orderForm = document.getElementById("orderForm");
+const editOrderInput = document.getElementById("editOrder");
+const apiUrl = "https://crudcrud.com/api/e59f97c66c58474b94b8fa3c6ad37cf2/order";
 
-orderForm.addEventListener("submit", function (event) {
+orderForm.addEventListener("submit",async function (event) {
     event.preventDefault();
 
     const dishValue = dishInput.value;
     const priceValue = priceInput.value;
-    const tableValue = tableInput.value;
+    const tableValue = parseInt(tableInput.value);
+    const orderId = editOrderInput.dataset.editingId;
+    
 
     if (!dishValue || !priceValue) {
         alert("Please enter both dish name and price.");
         return;
     }
 
-    const order = {
-        id: Date.now(), 
+    const order = { 
         dish: dishValue,
         price: priceValue,
         table: tableValue
     };
     
-    let orders = JSON.parse(localStorage.getItem("orders")) || [];
-    orders.push(order);
-    localStorage.setItem("orders", JSON.stringify(orders));
+    try {
+        if (orderId) {
+            
+            await axios.put(`${apiUrl}/${orderId}`, order, {
+                    headers: { "Content-Type": "application/json" }
+                });
+            delete editOrderInput.dataset.editingId; 
+            dishInput.value = "";
+            priceInput.value = "";
+            tableInput.value = "1";
+            loadOrders();
+        } else {
+            await axios.post(apiUrl, order);
+            dishInput.value = "";
+            priceInput.value = "";
+            tableInput.value = "1";
+            loadOrders();
+        }
+    } catch(error){
+        console.error("Error adding order:", error);
+    }   
 
-    dishInput.value = "";
-    priceInput.value = "";
-    tableInput.value = "Table 1";
-
-    loadOrders();
+    
 });
 
-function loadOrders() {
-    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+async function loadOrders() {
+  try 
+  {
+        const response = await axios.get(apiUrl);
+        const orders = response.data;
 
-    document.getElementById("table1Orders").innerHTML = "";
-    document.getElementById("table2Orders").innerHTML = "";
-    document.getElementById("table3Orders").innerHTML = "";
+        //const orders = JSON.parse(localStorage.getItem("orders")) || [];
 
-    let totalTable1 = 0;
-    let totalTable2 = 0;
-    let totalTable3 = 0;
+        document.getElementById("table1Orders").innerHTML = "";
+        document.getElementById("table2Orders").innerHTML = "";
+        document.getElementById("table3Orders").innerHTML = "";
 
-    let indexTable1 = 1;
-    let indexTable2 = 1;
-    let indexTable3 = 1;
+        let totalTable1 = 0;
+        let totalTable2 = 0;
+        let totalTable3 = 0;
 
-    orders.forEach(order => {
-        const orderRow = document.createElement("tr");
-        let index;
-        let price = parseFloat(order.price);
+        let indexTable1 = 1;
+        let indexTable2 = 1;
+        let indexTable3 = 1;
 
-        if (order.table === "Table 1") {
-            index = indexTable1++;
-            totalTable1 += price;
-            document.getElementById("table1Orders").appendChild(orderRow);
-        } else if (order.table === "Table 2") {
-            index = indexTable2++;
-            totalTable2 += price;
-            document.getElementById("table2Orders").appendChild(orderRow);
-        } else if (order.table === "Table 3") {
-            index = indexTable3++;
-            totalTable3 += price;
-            document.getElementById("table3Orders").appendChild(orderRow);
-        }
+        orders.forEach(order => {
+            const orderRow = document.createElement("tr");
+            let index;
+            let price = parseFloat(order.price);
 
-        orderRow.innerHTML = `
-            <td>${index}</td>
-            <td>${order.dish}</td>
-            <td>₹${order.price}</td>
-            <td>
-                <button onclick="editOrder(${order.id})" class="edit-btn">Edit</button>
-               <button onclick="deleteOrder(${order.id})" class="delete-btn">Delete</button>
-            </td>
-        `;
-    });
+            if (order.table === 1) {
+                index = indexTable1++;
+                totalTable1 += price;
+                document.getElementById("table1Orders").appendChild(orderRow);
+            } else if (order.table === 2) {
+                index = indexTable2++;
+                totalTable2 += price;
+                document.getElementById("table2Orders").appendChild(orderRow);
+            } else if (order.table === 3) {
+                index = indexTable3++;
+                totalTable3 += price;
+                document.getElementById("table3Orders").appendChild(orderRow);
+            }
 
-    document.getElementById("totalTable1").textContent = `Total: ₹${totalTable1.toFixed(2)}`;
-    document.getElementById("totalTable2").textContent = `Total: ₹${totalTable2.toFixed(2)}`;
-    document.getElementById("totalTable3").textContent = `Total: ₹${totalTable3.toFixed(2)}`;
+            orderRow.innerHTML = `
+                <td>${index}</td>
+                <td>${order.dish}</td>
+                <td>₹${order.price}</td>
+                <td>
+                    <button onclick="editOrder('${order._id}')" class="edit-btn">Edit</button>
+                <button onclick="deleteOrder('${order._id}')" class="delete-btn">Delete</button>
+                </td>
+            `;
+        });
+
+        document.getElementById("totalTable1").textContent = `Total: ₹${totalTable1.toFixed(2)}`;
+        document.getElementById("totalTable2").textContent = `Total: ₹${totalTable2.toFixed(2)}`;
+        document.getElementById("totalTable3").textContent = `Total: ₹${totalTable3.toFixed(2)}`;
+
+  } catch (error) {
+        console.error("Error loading orders:", error);
+    }   
 }
 
-function deleteOrder(orderId) {
+async function deleteOrder(orderId) {
     if (confirm("Do you want to delete this order?")) {
-        let orders = JSON.parse(localStorage.getItem("orders")) || [];
-        orders = orders.filter(order => order.id !== orderId);
-        localStorage.setItem("orders", JSON.stringify(orders));
-        loadOrders();
+        try {
+            await axios.delete(`${apiUrl}/${orderId}`);
+            loadOrders();
+        } catch (error) {
+            console.error("Error deleting order:", error);
+        }
     }
 }
 
 
-function editOrder(orderId) {
-    let orders = JSON.parse(localStorage.getItem("orders")) || [];
-    let orderToEdit = orders.find(order => order.id === orderId);
+async function editOrder(orderId){
+    
+    try {
+        const response = await axios.get(`${apiUrl}/${orderId}`);
+        const orderToEdit = response.data;
 
-    if (!orderToEdit) return;
+        dishInput.value = orderToEdit.dish;
+        priceInput.value = orderToEdit.price;
+        tableInput.value = orderToEdit.table;
 
-    dishInput.value = orderToEdit.dish;
-    priceInput.value = orderToEdit.price;
-    tableInput.value = orderToEdit.table;
+        editOrderInput.dataset.editingId = orderId;
+    
+        window.scrollTo({ top: 0, behavior: "smooth" });
 
-    orders = orders.filter(order => order.id !== orderId);
-    localStorage.setItem("orders", JSON.stringify(orders));
-
-    loadOrders();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error) {
+        console.error("Error editing order:", error);
+    }
 }
 
 
